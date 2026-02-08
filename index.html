@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Woogle</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #202124; color: white; }
+        .logo { font-size: 90px; font-weight: bold; margin-bottom: 30px; letter-spacing: -5px; }
+        .w { color: #4285F4; } .o1 { color: #EA4335; } .o2 { color: #FBBC05; } .g { color: #4285F4; } .l { color: #34A853; } .e { color: #EA4335; }
+        .search-container { width: 100%; max-width: 584px; }
+        form { display: flex; flex-direction: column; align-items: center; }
+        input[type="text"] { width: 100%; padding: 12px 20px; border-radius: 24px; border: 1px solid #5f6368; background-color: transparent; color: white; font-size: 16px; outline: none; }
+        input[type="text"]:hover, input[type="text"]:focus { background-color: #303134; box-shadow: 0 1px 6px rgba(0,0,0,0.28); border-color: transparent; }
+        .buttons { margin-top: 20px; }
+        button { background-color: #303134; border: 1px solid #303134; color: #e8eaed; padding: 10px 20px; font-size: 14px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { border: 1px solid #5f6368; color: white; }
+        .tagline { margin-top: 15px; color: #9aa0a6; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="logo">
+        <span class="w">W</span><span class="o1">o</span><span class="o2">o</span><span class="g">g</span><span class="l">l</span><span class="e">e</span>
+    </div>
+
+    <div class="search-container">
+        <form action="https://www.google.com/search" method="GET">
+            <input type="text" name="q" placeholder="Search Woogle or type a URL" autocomplete="off">
+            <div class="buttons">
+                <button type="submit">Woogle Search</button>
+                <button type="button" onclick="alert('You are feeling lucky on Woogle!')">I'm Feeling Lucky</button>
+            </div>
+        </form>
+    </div>
+
+    <p class="tagline">No AI. No tracking. Just Woogle.</p>
+
+</body>
+</html>
