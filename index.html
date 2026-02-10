@@ -2,102 +2,96 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Woogle - No AI Slop</title>
+    <title>Woogle - Pure Internet</title>
     <style>
-        :root { --bg: #ffffff; --text: #202124; --accent: #4285f4; --card: #f8f9fa; }
-        [data-theme="dark"] { --bg: #202124; --text: #e8eaed; --accent: #8ab4f8; --card: #303134; }
+        :root { 
+            --bg: #ffffff; --text: #202124; --accent: #4285f4; 
+            --g-blue: #4285f4; --g-red: #ea4335; --g-yellow: #fbbc05; --g-green: #34a853;
+        }
+        [data-theme="dark"] { --bg: #202124; --text: #e8eaed; --accent: #8ab4f8; }
         
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); 
+        body { font-family: 'Product Sans', Arial, sans-serif; background: var(--bg); color: var(--text); 
                display: flex; flex-direction: column; align-items: center; justify-content: center; 
-               height: 100vh; margin: 0; transition: 0.3s; }
-        
-        .container { text-align: center; width: 90%; max-width: 600px; }
-        h1 { font-size: 4rem; margin-bottom: 20px; letter-spacing: -2px; }
-        h1 span { color: var(--accent); }
+               height: 100vh; margin: 0; transition: background 0.5s ease; overflow: hidden; }
 
-        .search-box { position: relative; display: flex; align-items: center; }
-        input { width: 100%; padding: 15px 50px 15px 25px; border-radius: 30px; border: 1px solid #dfe1e5;
-                font-size: 1.1rem; outline: none; background: var(--card); color: var(--text); }
-        
-        .mic-btn { position: absolute; right: 15px; cursor: pointer; background: none; border: none; font-size: 1.5rem; }
+        /* --- GOOGLE THEMED LOGO --- */
+        h1 { font-size: 5rem; font-weight: 500; margin-bottom: 10px; cursor: default; }
+        .g-b { color: var(--g-blue); } .g-r { color: var(--g-red); }
+        .g-y { color: var(--g-yellow); } .g-g { color: var(--g-green); }
 
-        .history-list { margin-top: 20px; text-align: left; background: var(--card); padding: 10px; border-radius: 10px; }
-        .history-item { padding: 8px; cursor: pointer; border-bottom: 1px solid #444; font-size: 0.9rem; }
-        .history-item:hover { color: var(--accent); }
+        /* --- ANIMATED BED LAMP --- */
+        .lamp-container { position: fixed; top: 30px; right: 40px; cursor: pointer; }
+        .lamp { width: 40px; height: 40px; background: #555; border-radius: 50% 50% 0 0; position: relative; transition: 0.3s; }
+        .lamp::after { content: ''; position: absolute; top: 40px; left: 15px; width: 10px; height: 20px; background: #888; }
+        .light-glow { position: absolute; top: -10px; left: -10px; width: 60px; height: 60px; 
+                      border-radius: 50%; background: rgba(255, 255, 0, 0); transition: 0.5s; }
+        [data-theme="light"] .light-glow { background: rgba(255, 235, 59, 0.6); box-shadow: 0 0 30px #fff176; }
+        [data-theme="light"] .lamp { background: #fdd835; }
 
-        .theme-toggle { position: fixed; top: 20px; right: 20px; cursor: pointer; font-size: 1.5rem; }
+        /* --- TYPING ANIMATION --- */
+        #typing-box { height: 24px; font-size: 1.1rem; color: #70757a; margin-bottom: 30px; font-style: italic; }
+        .cursor { border-left: 2px solid var(--accent); animation: blink 0.8s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .search-box { width: 90%; max-width: 584px; display: flex; align-items: center; 
+                      border: 1px solid #dfe1e5; padding: 10px 20px; border-radius: 24px; background: var(--bg); }
+        .search-box:hover { box-shadow: 0 1px 6px rgba(32,33,36,.28); }
+        input { flex: 1; border: none; outline: none; font-size: 16px; background: transparent; color: var(--text); }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
-    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-
-    <div class="container">
-        <h1>Woo<span>gle</span></h1>
-        <form id="searchForm" onsubmit="handleSearch(event)">
-            <div class="search-box">
-                <input type="text" id="query" placeholder="Search the web (AI-Free)..." autocomplete="off">
-                <button type="button" class="mic-btn" onclick="startVoice()">🎙️</button>
-            </div>
-        </form>
-
-        <div id="history" class="history-list" style="display:none;">
-            <strong>Recent Searches:</strong>
-            <div id="historyItems"></div>
-        </div>
+    <div class="lamp-container" onclick="toggleTheme()">
+        <div class="light-glow"></div>
+        <div class="lamp"></div>
     </div>
 
+    <h1>
+        <span class="g-b">W</span><span class="g-r">o</span><span class="g-y">o</span><span class="g-b">g</span><span class="g-g">l</span><span class="g-r">e</span>
+    </h1>
+
+    <div id="typing-box"><span id="text"></span><span class="cursor"></span></div>
+
+    <form onsubmit="handleSearch(event)" class="search-box">
+        <input type="text" id="query" placeholder="Search without the bots..." autocomplete="off">
+    </form>
+
     <script>
-        // --- 1. SEARCH LOGIC ---
+        const quotes = [
+            "Human content has a soul; AI is just math.",
+            "Internet without AI means real links, not hallucinations.",
+            "Search for truth, not algorithmically generated slop.",
+            "Protecting the web from the 'Dead Internet' theory.",
+            "Verified by Anubis. Solved by Humans."
+        ];
+
+        let quoteIdx = 0, charIdx = 0, isDeleting = false;
+        function type() {
+            const current = quotes[quoteIdx];
+            const display = isDeleting ? current.substring(0, charIdx--) : current.substring(0, charIdx++);
+            document.getElementById('text').innerText = display;
+
+            if (!isDeleting && charIdx > current.length) {
+                setTimeout(() => isDeleting = true, 2000);
+            } else if (isDeleting && charIdx < 0) {
+                isDeleting = false;
+                quoteIdx = (quoteIdx + 1) % quotes.length;
+            }
+            setTimeout(type, isDeleting ? 50 : 100);
+        }
+
+        function toggleTheme() {
+            const theme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', theme);
+        }
+
         function handleSearch(e) {
             e.preventDefault();
             const q = document.getElementById('query').value;
-            if(!q) return;
-            
-            saveHistory(q);
-            window.location.href = `https://www.google.com/search?q=${encodeURIComponent(q)}&udm=14`; 
+            window.location.href = `https://www.google.com/search?q=${encodeURIComponent(q)}&udm=14`;
         }
 
-        // --- 2. VOICE SEARCH ---
-        function startVoice() {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.onresult = (event) => {
-                document.getElementById('query').value = event.results[0][0].transcript;
-                document.getElementById('searchForm').submit();
-            };
-            recognition.start();
-        }
-
-        // --- 3. THEME TOGGLE ---
-        function toggleTheme() {
-            const current = document.documentElement.getAttribute('data-theme');
-            const target = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', target);
-            localStorage.setItem('theme', target);
-        }
-
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', savedTheme);
-
-        // --- 4. HISTORY LOGIC ---
-        function saveHistory(q) {
-            let history = JSON.parse(localStorage.getItem('woogle_history') || '[]');
-            history = [q, ...history.filter(x => x !== q)].slice(0, 5);
-            localStorage.setItem('woogle_history', JSON.stringify(history));
-        }
-
-        function loadHistory() {
-            const history = JSON.parse(localStorage.getItem('woogle_history') || '[]');
-            if (history.length > 0) {
-                document.getElementById('history').style.display = 'block';
-                document.getElementById('historyItems').innerHTML = history.map(h => 
-                    `<div class="history-item" onclick="document.getElementById('query').value='${h}'; handleSearch(event)">${h}</div>`
-                ).join('');
-            }
-        }
-        loadHistory();
+        type();
     </script>
 </body>
 </html>
