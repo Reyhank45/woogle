@@ -3,109 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Woogle | Premium Search</title>
+    <title>Woogle | Human Search</title>
     <style>
         :root {
             --bg: #0a0a0c;
             --text: #ffffff;
-            --glass: rgba(255, 255, 255, 0.03);
+            --glass: rgba(255, 255, 255, 0.05);
             --g-blue: #4285f4; --g-red: #ea4335; --g-yellow: #fbbc05; --g-green: #34a853;
         }
 
         [data-theme="light"] {
-            --bg: #f8f9fa;
+            --bg: #f2f2f2;
             --text: #202124;
-            --glass: rgba(255, 255, 255, 0.7);
+            --glass: rgba(255, 255, 255, 0.8);
         }
 
         body {
-            font-family: 'Product Sans', 'Arial', sans-serif;
+            font-family: 'Product Sans', sans-serif;
             background: var(--bg);
             color: var(--text);
             margin: 0; height: 100vh;
             display: flex; flex-direction: column; align-items: center;
-            transition: background 0.5s ease-in-out;
+            transition: background 0.5s ease;
             overflow: hidden;
         }
 
-        /* --- 1. THE ULTIMATE BOLD GOOGLE LOGO --- */
+        /* --- LOGO RTX --- */
         .logo {
-            font-size: 7.5rem;
-            font-weight: 900;
-            letter-spacing: -6px;
-            margin-top: 18vh;
-            margin-bottom: 40px;
-            user-select: none;
-            display: flex;
-            gap: 2px;
-            /* RTX Reflection */
+            font-size: 7.5rem; font-weight: 900; letter-spacing: -6px;
+            margin-top: 20vh; margin-bottom: 40px;
             -webkit-box-reflect: below -25px linear-gradient(transparent, rgba(255,255,255,0.05));
         }
-        .w-b { color: var(--g-blue); text-shadow: 0 0 35px rgba(66, 133, 244, 0.6); }
-        .w-r { color: var(--g-red); text-shadow: 0 0 35px rgba(234, 67, 53, 0.6); }
-        .w-y { color: var(--g-yellow); text-shadow: 0 0 35px rgba(251, 188, 5, 0.6); }
-        .w-g { color: var(--g-green); text-shadow: 0 0 35px rgba(52, 168, 83, 0.6); }
+        .w-b { color: var(--g-blue); text-shadow: 0 0 30px rgba(66,133,244,0.5); }
+        .w-r { color: var(--g-red); text-shadow: 0 0 30px rgba(234,67,53,0.5); }
+        .w-y { color: var(--g-yellow); text-shadow: 0 0 30px rgba(251,188,5,0.5); }
+        .w-g { color: var(--g-green); text-shadow: 0 0 30px rgba(52,168,83,0.5); }
 
-        /* --- 2. THE PREMIUM BED LAMP --- */
-        .lamp-unit { position: fixed; top: 0; right: 12%; z-index: 100; cursor: pointer; }
-        .lamp-cord { width: 3px; height: 60px; background: #333; margin: 0 auto; }
-        .lamp-shade {
-            width: 100px; height: 75px; 
-            background: #222; border-radius: 50% 50% 5px 5px;
-            position: relative; transition: 0.3s;
+        /* --- SEARCH CONTAINER WITH ICON --- */
+        .search-container { 
+            width: 90%; max-width: 620px; 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
         }
-        .lamp-shade:active { transform: translateY(8px); }
-        
-        /* Realistic Beam */
-        .beam {
-            position: absolute; top: 65px; left: 50%; transform: translateX(-50%);
-            width: 500px; height: 0; opacity: 0;
-            background: radial-gradient(ellipse at top, rgba(255, 230, 150, 0.45), transparent 75%);
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-            filter: blur(12px); pointer-events: none; transition: 0.4s;
-        }
-        [data-theme="light"] .beam { height: 800px; opacity: 1; }
-        [data-theme="light"] .lamp-shade { background: #fbbc05; box-shadow: 0 0 50px #fbbc05; }
 
-        /* --- 3. SIDEBAR MENU --- */
-        .hamburger { position: fixed; top: 35px; left: 35px; z-index: 200; cursor: pointer; }
-        .hamburger div { width: 28px; height: 3px; background: var(--text); margin: 6px 0; border-radius: 5px; }
-        
-        .sidebar {
-            position: fixed; top: 0; left: -320px; width: 320px; height: 100%;
-            background: rgba(10, 10, 12, 0.98); backdrop-filter: blur(30px);
-            border-right: 1px solid rgba(255,255,255,0.1);
-            transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); z-index: 190;
-            padding-top: 120px;
+        .search-icon {
+            position: absolute;
+            left: 22px;
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: #9aa0a6;
+            stroke-width: 3;
+            stroke-linecap: round;
+            transition: 0.3s;
         }
-        .sidebar.open { left: 0; }
-        .nav-link {
-            padding: 18px 40px; color: #aaa; font-size: 1.1rem; cursor: pointer;
-            transition: 0.2s; display: block; text-decoration: none;
-        }
-        .nav-link:hover { color: #fff; background: var(--glass); padding-left: 55px; }
 
-        /* --- 4. SEARCH BOX --- */
-        .search-container { width: 90%; max-width: 620px; }
         .search-bar {
-            width: 100%; padding: 22px 30px; border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.1); background: var(--glass);
-            color: var(--text); font-size: 1.25rem; outline: none;
-            backdrop-filter: blur(10px); transition: 0.3s;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            width: 100%; 
+            padding: 22px 30px 22px 60px; /* Extra left padding for the icon */
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1); 
+            background: var(--glass);
+            color: var(--text); 
+            font-size: 1.25rem; 
+            outline: none;
+            backdrop-filter: blur(20px); 
+            transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        .search-bar:focus { border-color: var(--g-blue); box-shadow: 0 0 30px rgba(66, 133, 244, 0.2); }
 
-        /* --- 5. REAL BREAKING NEWS TICKER --- */
-        .news-dock {
-            position: fixed; bottom: 0; width: 100%; height: 60px;
-            background: var(--glass); backdrop-filter: blur(20px);
-            display: flex; align-items: center; border-top: 1px solid rgba(255,255,255,0.05);
+        /* Icon glows when you focus the bar */
+        .search-bar:focus + .search-icon {
+            stroke: var(--g-blue);
+            filter: drop-shadow(0 0 5px var(--g-blue));
         }
-        .news-label { padding: 0 25px; color: var(--g-red); font-weight: 900; font-size: 0.8rem; letter-spacing: 1px; }
+
+        @keyframes textBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .blink-mode { animation: textBlink 0.4s ease-in-out 2; }
+
+        /* --- PREMIUM LAMP --- */
+        .lamp-box { position: fixed; top: 0; right: 10%; cursor: pointer; z-index: 100; }
+        .cord { width: 2px; height: 50px; background: #444; margin: 0 auto; }
+        .shade { width: 80px; height: 60px; background: #222; border-radius: 40px 40px 5px 5px; position: relative; }
+        .beam {
+            position: absolute; top: 55px; left: 50%; transform: translateX(-50%);
+            width: 400px; height: 0; opacity: 0;
+            background: radial-gradient(ellipse at top, rgba(255, 230, 150, 0.4), transparent 70%);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            filter: blur(15px); transition: 0.5s; pointer-events: none;
+        }
+        [data-theme="light"] .beam { height: 700px; opacity: 1; }
+        [data-theme="light"] .shade { background: var(--g-yellow); box-shadow: 0 0 40px var(--g-yellow); }
+
+        /* --- FLOATING NEWS FEED --- */
+        .news-dock {
+            position: fixed; bottom: -80px;
+            width: 85%; max-width: 800px; height: 60px;
+            background: var(--glass); backdrop-filter: blur(25px);
+            border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; padding: 0 20px;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            opacity: 0; pointer-events: none;
+        }
+        .news-dock.visible { transform: translateY(-110px); opacity: 1; pointer-events: auto; }
+        .news-label { color: var(--g-red); font-weight: 900; font-size: 0.75rem; margin-right: 20px; white-space: nowrap; }
         .ticker-wrap { overflow: hidden; flex: 1; position: relative; }
-        .ticker-move { display: inline-block; white-space: nowrap; animation: ticker 40s linear infinite; }
-        .news-item { padding: 0 40px; color: var(--text); text-decoration: none; font-size: 0.95rem; opacity: 0.8; }
+        .ticker-move { display: inline-block; white-space: nowrap; animation: ticker 45s linear infinite; }
+        .news-item { padding: 0 30px; color: var(--text); text-decoration: none; font-size: 0.9rem; opacity: 0.8; }
         .news-item:hover { color: var(--g-blue); opacity: 1; }
 
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
@@ -113,21 +122,9 @@
 </head>
 <body data-theme="dark">
 
-    <div class="hamburger" onclick="toggleSidebar()">
-        <div></div><div></div><div></div>
-    </div>
-    <div class="sidebar" id="sidebar">
-        <div class="nav-link" onclick="search('site:reddit.com')">🌐 Global Reddit Community</div>
-        <div class="nav-link" onclick="search('scientific research -ai -gpt')">🔬 Pure Science</div>
-        <div class="nav-link" onclick="search('breaking news -ai')">📰 Human News</div>
-        <div class="nav-link" onclick="search('documentation -ai')">👨‍💻 Coding Docs</div>
-    </div>
-
-    <div class="lamp-unit" onclick="toggleTheme()">
-        <div class="lamp-cord"></div>
-        <div class="lamp-shade">
-            <div class="beam"></div>
-        </div>
+    <div class="lamp-box" onclick="toggleTheme()">
+        <div class="cord"></div>
+        <div class="shade"><div class="beam"></div></div>
     </div>
 
     <div class="logo">
@@ -135,51 +132,78 @@
     </div>
 
     <div class="search-container">
-        <form onsubmit="doSearch(event)">
+        <form onsubmit="doSearch(event)" style="width: 100%;">
             <input type="text" id="q" class="search-bar" spellcheck="false" autocomplete="off">
+            <svg class="search-icon" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
         </form>
     </div>
 
-    <div class="news-dock">
-        <div class="news-label">REAL-TIME HUMAN FEED</div>
+    <div class="news-dock" id="dock">
+        <div class="news-label">HUMAN FEED 🔴</div>
         <div class="ticker-wrap">
-            <div class="ticker-move" id="ticker">Loading AI-filtered news...</div>
+            <div class="ticker-move" id="ticker">Filtering out AI slop...</div>
         </div>
     </div>
 
     <script>
         const input = document.getElementById('q');
+        const dock = document.getElementById('dock');
         
-        // Typing Placeholder
-        const hints = ["Find truth without AI...", "Search the pure web...", "Anubis is guarding...", "No bots allowed."];
+        // --- TYPING ANIMATION WITH BLINK ---
+        const hints = ["Search the pure web", "No AI slop allowed", "Anubis is guarding", "Pure human content"];
         let hIdx = 0, charIdx = 0, isDeleting = false;
-        function type() {
-            const h = hints[hIdx];
-            input.placeholder = h.substring(0, charIdx) + "|";
-            if(!isDeleting && charIdx < h.length) charIdx++;
-            else if(isDeleting && charIdx > 0) charIdx--;
-            else { isDeleting = !isDeleting; if(!isDeleting) hIdx = (hIdx+1)%hints.length; }
-            setTimeout(type, isDeleting ? 40 : 100);
+
+        function typeEffect() {
+            const currentHint = hints[hIdx];
+            if (!isDeleting && charIdx <= currentHint.length) {
+                input.placeholder = currentHint.substring(0, charIdx) + "|";
+                charIdx++;
+                setTimeout(typeEffect, 100);
+            } else if (!isDeleting && charIdx > currentHint.length) {
+                input.classList.add('blink-mode');
+                input.placeholder = currentHint;
+                setTimeout(() => {
+                    input.classList.remove('blink-mode');
+                    isDeleting = true;
+                    typeEffect();
+                }, 1200);
+            } else if (isDeleting && charIdx >= 0) {
+                input.placeholder = currentHint.substring(0, charIdx) + "|";
+                charIdx--;
+                setTimeout(typeEffect, 50);
+            } else {
+                isDeleting = false;
+                hIdx = (hIdx + 1) % hints.length;
+                charIdx = 0;
+                setTimeout(typeEffect, 500);
+            }
         }
-        type();
+        typeEffect();
 
-        // Sidebar & Theme
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-        function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+        document.addEventListener('mousemove', (e) => {
+            if (window.innerHeight - e.clientY < 150) dock.classList.add('visible');
+            else dock.classList.remove('visible');
+        });
 
-        // Search Engine
-        function doSearch(e) { e.preventDefault(); search(input.value); }
-        function search(val) { if(val) window.location.href = `https://www.google.com/search?q=${encodeURIComponent(val)}&udm=14`; }
+        function toggleTheme() {
+            document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        }
+        function doSearch(e) {
+            e.preventDefault();
+            if(input.value) window.location.href = `https://www.google.com/search?q=${encodeURIComponent(input.value)}&udm=14`;
+        }
 
-        // News Logic
         async function fetchNews() {
             try {
-                const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/rss.xml");
+                const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml");
                 const data = await res.json();
                 const forbidden = ['ai', 'gpt', 'bot', 'gemini', 'intelligence'];
                 const clean = data.items.filter(i => !forbidden.some(word => (i.title + i.description).toLowerCase().includes(word)));
                 document.getElementById('ticker').innerHTML = clean.map(i => `<a href="${i.link}" target="_blank" class="news-item">${i.title}</a>`).join('');
-            } catch(e) { document.getElementById('ticker').innerText = "News service currently restricted."; }
+            } catch(e) { document.getElementById('ticker').innerText = "Real-time feed temporarily shielded."; }
         }
         fetchNews();
     </script>
