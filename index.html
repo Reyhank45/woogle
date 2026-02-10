@@ -3,200 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Woogle - The better Web</title>
+    <title>Woogle - Pure Internet</title>
     <style>
         :root {
-            --bg: #0f0f12;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --text: #ffffff;
-            --glow-blue: #4285f4; --glow-red: #ea4335; 
-            --glow-yellow: #fbbc05; --glow-green: #34a853;
-            --shadow-light: rgba(255, 255, 255, 0.1);
+            --bg: #111;
+            --glass: rgba(255, 255, 255, 0.05);
+            --text: #fff;
+            --accent: #4285f4;
+            --shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
         [data-theme="light"] {
             --bg: #f0f2f5;
-            --card-bg: rgba(255, 255, 255, 0.8);
+            --glass: rgba(255, 255, 255, 0.6);
             --text: #202124;
-            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
         body {
-            font-family: 'Roboto', 'Segoe UI', sans-serif;
+            font-family: 'Google Sans', 'Roboto', sans-serif;
             background: var(--bg);
             color: var(--text);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             height: 100vh;
             margin: 0;
             overflow: hidden;
             transition: background 0.5s ease;
         }
 
-        /* --- BACKGROUND BLOOM EFFECT --- */
-        .ambient-glow {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(66,133,244,0.15) 0%, rgba(0,0,0,0) 70%);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: -1;
-            animation: pulse 10s infinite alternate;
-        }
-
-        /* --- THE RTX LOGO --- */
-        h1 {
-            font-size: 6rem;
-            font-weight: 900; /* Extra Bold */
-            margin-bottom: 40px;
-            letter-spacing: -3px;
-            user-select: none;
-            /* subtle reflection */
-            -webkit-box-reflect: below -20px linear-gradient(transparent, rgba(0,0,0,0.2));
-        }
-
-        /* Individual glowing letters */
-        .l-b { color: var(--glow-blue); text-shadow: 0 0 20px rgba(66, 133, 244, 0.6); }
-        .l-r { color: var(--glow-red); text-shadow: 0 0 20px rgba(234, 67, 53, 0.6); }
-        .l-y { color: var(--glow-yellow); text-shadow: 0 0 20px rgba(251, 188, 5, 0.6); }
-        .l-g { color: var(--glow-green); text-shadow: 0 0 20px rgba(52, 168, 83, 0.6); }
-
-        /* --- GLASSMORPHISM SEARCH BAR --- */
-        .search-container {
-            position: relative;
-            width: 90%;
-            max-width: 650px;
-        }
-
-        .search-box {
-            width: 100%;
-            padding: 20px 25px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: var(--card-bg);
-            backdrop-filter: blur(15px); /* The "Glass" effect */
-            color: var(--text);
-            outline: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Hover/Focus Glow */
-        .search-box:focus {
-            border-color: var(--glow-blue);
-            box-shadow: 0 0 25px rgba(66, 133, 244, 0.3), inset 0 0 10px rgba(66, 133, 244, 0.1);
-            transform: scale(1.02);
-        }
-
-        /* --- NEW LAMP TOGGLE (SVG) --- */
-        .lamp-switch {
-            position: absolute;
-            top: 40px;
-            right: 40px;
-            cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .lamp-switch:active { transform: scale(0.9) translateY(10px); }
-
-        /* Lamp Off State */
-        .lamp-icon { fill: none; stroke: #555; stroke-width: 2; transition: 0.5s; }
+        /* --- 1. REALISTIC LAMP LIGHT --- */
+        .lamp-container { position: fixed; top: 0; right: 100px; z-index: 10; }
         
-        /* Lamp On State (Light Mode) */
-        [data-theme="light"] .lamp-icon {
-            stroke: #fbbc05;
-            fill: rgba(251, 188, 5, 0.8);
-            filter: drop-shadow(0 0 15px #fbbc05);
+        /* The Bulb */
+        .bulb {
+            width: 60px; height: 60px; background: #444; border-radius: 0 0 20px 20px;
+            position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+            z-index: 2; cursor: pointer; transition: 0.3s;
         }
 
-        @keyframes pulse { 0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } }
+        /* The Light Beam (Cone) */
+        .light-beam {
+            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+            width: 400px; height: 0; opacity: 0;
+            background: radial-gradient(ellipse at top, rgba(255, 220, 100, 0.6), transparent 70%);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%); /* Triangle Shape */
+            transition: height 0.3s ease-out, opacity 0.3s ease;
+            pointer-events: none; z-index: 1;
+            filter: blur(10px);
+        }
+
+        /* Light On State */
+        [data-theme="light"] .light-beam { height: 600px; opacity: 1; }
+        [data-theme="light"] .bulb { background: #fbbc05; box-shadow: 0 0 40px #fbbc05; }
+
+
+        /* --- 2. MENU (Hamburger) --- */
+        .menu-btn {
+            position: fixed; top: 30px; left: 30px; cursor: pointer; z-index: 20;
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .bar { width: 30px; height: 3px; background: var(--text); border-radius: 2px; transition: 0.3s; }
+        
+        .sidebar {
+            position: fixed; top: 0; left: -250px; width: 250px; height: 100%;
+            background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(20px);
+            transition: 0.4s; z-index: 19; padding-top: 80px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar.active { left: 0; }
+        .menu-item {
+            padding: 15px 30px; color: #fff; text-decoration: none; display: block;
+            font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s;
+        }
+        .menu-item:hover { background: var(--accent); padding-left: 40px; }
+
+
+        /* --- 3. RTX LOGO & SEARCH --- */
+        .center-content { margin-top: 15vh; text-align: center; z-index: 5; }
+        
+        h1 {
+            font-size: 6rem; font-weight: 900; letter-spacing: -4px; margin: 0 0 40px 0;
+            user-select: none;
+        }
+        .g-blue { color: #4285f4; text-shadow: 0 0 30px rgba(66, 133, 244, 0.5); }
+        .g-red { color: #ea4335; text-shadow: 0 0 30px rgba(234, 67, 53, 0.5); }
+        .g-yellow { color: #fbbc05; text-shadow: 0 0 30px rgba(251, 188, 5, 0.5); }
+        .g-green { color: #34a853; text-shadow: 0 0 30px rgba(52, 168, 83, 0.5); }
+
+        .search-container {
+            position: relative; width: 600px;
+        }
+        .search-box {
+            width: 100%; padding: 20px 25px; font-size: 1.2rem;
+            border-radius: 50px; border: 1px solid rgba(255,255,255,0.2);
+            background: var(--glass); backdrop-filter: blur(15px);
+            color: var(--text); outline: none; transition: 0.3s;
+            box-shadow: var(--shadow);
+        }
+        .search-box:focus {
+            transform: scale(1.02); border-color: var(--accent);
+            box-shadow: 0 0 25px rgba(66, 133, 244, 0.4);
+        }
+
+
+        /* --- 4. REAL NEWS (Bottom) --- */
+        .news-section {
+            position: fixed; bottom: 30px; width: 80%; max-width: 900px;
+            background: var(--glass); backdrop-filter: blur(10px);
+            border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.1);
+            animation: slideUp 0.8s ease-out;
+        }
+        .news-header { font-size: 0.9rem; font-weight: bold; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .news-grid { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 10px; }
+        .news-card {
+            min-width: 200px; padding: 10px; background: rgba(255,255,255,0.03);
+            border-radius: 10px; cursor: pointer; transition: 0.3s;
+            text-decoration: none; color: var(--text);
+        }
+        .news-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-5px); }
+        .news-title { font-size: 0.9rem; line-height: 1.4; }
+        
+        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
     </style>
 </head>
 <body data-theme="dark">
 
-    <div class="ambient-glow"></div>
-
-    <div class="lamp-switch" onclick="toggleTheme()" title="Toggle Lights">
-        <svg width="60" height="100" viewBox="0 0 60 100">
-            <line x1="30" y1="0" x2="30" y2="40" stroke="currentColor" stroke-width="2" class="lamp-cord"/>
-            <path d="M15,40 Q5,60 15,80 Q30,95 45,80 Q55,60 45,40 Z" class="lamp-icon"/>
-        </svg>
+    <div class="menu-btn" onclick="toggleMenu()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
     </div>
 
-    <h1>
-        <span class="l-b">W</span><span class="l-r">o</span><span class="l-y">o</span><span class="l-b">g</span><span class="l-g">l</span><span class="l-r">e</span>
-    </h1>
+    <div class="sidebar" id="sidebar">
+        <a href="#" class="menu-item">📰 World News</a>
+        <a href="#" class="menu-item">🔬 Science (No AI)</a>
+        <a href="#" class="menu-item">💻 Coding Articles</a>
+        <a href="#" class="menu-item">🛡️ About Anubis</a>
+    </div>
 
-    <div class="search-container">
-        <form onsubmit="handleSearch(event)">
-            <input type="text" id="query" class="search-box" autocomplete="off">
-        </form>
+    <div class="lamp-container">
+        <div class="bulb" onclick="toggleTheme()"></div>
+        <div class="light-beam"></div>
+    </div>
+
+    <div class="center-content">
+        <h1>
+            <span class="g-blue">W</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
+        </h1>
+
+        <div class="search-container">
+            <form onsubmit="handleSearch(event)">
+                <input type="text" id="query" class="search-box" autocomplete="off">
+            </form>
+        </div>
+    </div>
+
+    <div class="news-section">
+        <div class="news-header">🔴 Real Human News (Filtered)</div>
+        <div class="news-grid" id="news-container">
+            <div style="padding:10px; color:#888;">Fetching pure information...</div>
+        </div>
     </div>
 
     <script>
-        // --- 1. TYPING ANIMATION IN PLACEHOLDER ---
-        const phrases = [
-            "Search without the bots...",
-            "Web 1.0 was better...",
-            "Anubis is watching...",
-            "No AI Slop allowed...",
-            "Just pure blue links..."
-        ];
+        // --- 1. TYPING ANIMATION ---
+        const phrases = ["Search pure web...", "No AI hallucinations...", "Verified by humans...", "Anubis Protected."];
+        let pIdx = 0, cIdx = 0, isDel = false;
+        
+        function type() {
+            const current = phrases[pIdx];
+            const txt = current.substring(0, cIdx);
+            document.getElementById('query').placeholder = txt + "|";
 
-        let pIdx = 0;
-        let charIdx = 0;
-        let isDeleting = false;
-        const input = document.getElementById('query');
+            if(!isDel && cIdx < current.length) { cIdx++; setTimeout(type, 100); }
+            else if(isDel && cIdx > 0) { cIdx--; setTimeout(type, 50); }
+            else { isDel = !isDel; if(!isDel) pIdx = (pIdx+1)%phrases.length; setTimeout(type, 1000); }
+        }
+        type();
 
-        function typeLoop() {
-            const currentPhrase = phrases[pIdx];
-            
-            // Determine text to show
-            let displayText = currentPhrase.substring(0, charIdx);
-            
-            // Update placeholder
-            input.setAttribute('placeholder', displayText + "|");
+        // --- 2. SEARCH ---
+        function handleSearch(e) {
+            e.preventDefault();
+            const q = document.getElementById('query').value;
+            if(q) window.location.href = `https://www.google.com/search?q=${encodeURIComponent(q)}&udm=14`;
+        }
 
-            // Typing Logic
-            if (!isDeleting && charIdx < currentPhrase.length) {
-                charIdx++;
-                setTimeout(typeLoop, 80); // Typing speed
-            } else if (isDeleting && charIdx > 0) {
-                charIdx--;
-                setTimeout(typeLoop, 40); // Deleting speed
-            } else {
-                // Pause at end or start
-                isDeleting = !isDeleting;
-                if (!isDeleting) {
-                    pIdx = (pIdx + 1) % phrases.length; // Next phrase
+        // --- 3. THEME & MENU ---
+        function toggleTheme() {
+            const b = document.body;
+            b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        }
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // --- 4. REAL NEWS FETCHER (AI FILTER) ---
+        async function fetchNews() {
+            const container = document.getElementById('news-container');
+            // Using a public RSS-to-JSON bridge (RSS2JSON) to bypass CORS
+            // Feed: The Verge (Tech)
+            const RSS_URL = "https://api.rss2json.com/v1/api.json?rss_url=https://www.theverge.com/rss/index.xml";
+
+            try {
+                const res = await fetch(RSS_URL);
+                const data = await res.json();
+                
+                // --- THE AI FILTER ---
+                const forbidden = ['ai', 'gpt', 'llm', 'gemini', 'chatgpt', 'artificial intelligence', 'machine learning'];
+                
+                const cleanNews = data.items.filter(item => {
+                    const txt = (item.title + item.description).toLowerCase();
+                    return !forbidden.some(badWord => txt.includes(badWord));
+                }).slice(0, 5); // Take top 5 clean stories
+
+                if(cleanNews.length === 0) {
+                    container.innerHTML = '<div style="padding:10px;">All current news contains AI. The internet is dead.</div>';
+                    return;
                 }
-                setTimeout(typeLoop, isDeleting ? 1000 : 500);
+
+                container.innerHTML = cleanNews.map(item => `
+                    <a href="${item.link}" target="_blank" class="news-card">
+                        <div class="news-title">${item.title}</div>
+                        <div style="font-size:0.7rem; margin-top:5px; opacity:0.6;">${new Date(item.pubDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                    </a>
+                `).join('');
+
+            } catch (e) {
+                container.innerHTML = '<div style="padding:10px; color:#f55;">News System Offline (RSS Error)</div>';
             }
         }
         
-        // Start typing
-        typeLoop();
-
-        // --- 2. SEARCH LOGIC ---
-        function handleSearch(e) {
-            e.preventDefault();
-            const q = input.value;
-            if (q.trim()) {
-                // udm=14 is the "Web Only" filter
-                window.location.href = `https://www.google.com/search?q=${encodeURIComponent(q)}&udm=14`;
-            }
-        }
-
-        // --- 3. THEME LOGIC ---
-        function toggleTheme() {
-            const body = document.body;
-            const current = body.getAttribute('data-theme');
-            body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
-        }
+        fetchNews();
     </script>
 </body>
 </html>
