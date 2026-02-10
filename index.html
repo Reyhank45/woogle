@@ -28,61 +28,65 @@
             overflow: hidden;
         }
 
-        /* --- LOGO RTX --- */
+        /* --- SIDEBAR & MENU --- */
+        .menu-toggle {
+            position: fixed; top: 30px; left: 30px; z-index: 9999;
+            cursor: pointer; padding: 10px; background: var(--glass);
+            border-radius: 12px; backdrop-filter: blur(10px);
+        }
+        .bar { width: 25px; height: 3px; background: var(--text); margin: 5px 0; border-radius: 2px; }
+
+        .sidebar {
+            position: fixed; top: 0; left: -300px; width: 300px; height: 100%;
+            background: rgba(10, 10, 12, 0.98); backdrop-filter: blur(30px);
+            transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); z-index: 9998;
+            padding-top: 100px; box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+        }
+        .sidebar.open { left: 0; }
+        .nav-link {
+            padding: 20px 40px; color: #aaa; font-size: 1.1rem; cursor: pointer;
+            display: block; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .nav-link:hover { color: #fff; background: var(--glass); }
+
+        /* --- LOGO --- */
         .logo {
             font-size: 7.5rem; font-weight: 900; letter-spacing: -6px;
-            margin-top: 20vh; margin-bottom: 40px;
+            margin-top: 18vh; margin-bottom: 40px;
             -webkit-box-reflect: below -25px linear-gradient(transparent, rgba(255,255,255,0.05));
         }
-        .w-b { color: var(--g-blue); text-shadow: 0 0 30px rgba(66,133,244,0.5); }
-        .w-r { color: var(--g-red); text-shadow: 0 0 30px rgba(234,67,53,0.5); }
-        .w-y { color: var(--g-yellow); text-shadow: 0 0 30px rgba(251,188,5,0.5); }
-        .w-g { color: var(--g-green); text-shadow: 0 0 30px rgba(52,168,83,0.5); }
+        .w-b { color: var(--g-blue); text-shadow: 0 0 30px rgba(66,133,244,0.4); }
+        .w-r { color: var(--g-red); text-shadow: 0 0 30px rgba(234,67,53,0.4); }
+        .w-y { color: var(--g-yellow); text-shadow: 0 0 30px rgba(251,188,5,0.4); }
+        .w-g { color: var(--g-green); text-shadow: 0 0 30px rgba(52,168,83,0.4); }
 
-        /* --- SEARCH CONTAINER WITH ICON --- */
+        /* --- SEARCH BAR FIXED --- */
         .search-container { 
-            width: 90%; max-width: 620px; 
-            position: relative; 
-            display: flex; 
-            align-items: center; 
+            width: 90%; max-width: 620px; position: relative;
         }
-
+        .search-wrapper {
+            display: flex; align-items: center; background: var(--glass);
+            border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);
+            padding: 0 25px; backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: 0.3s;
+        }
+        .search-wrapper:focus-within {
+            border-color: var(--g-blue); box-shadow: 0 0 30px rgba(66, 133, 244, 0.2);
+            transform: scale(1.02);
+        }
         .search-icon {
-            position: absolute;
-            left: 22px;
-            width: 20px;
-            height: 20px;
-            fill: none;
-            stroke: #9aa0a6;
-            stroke-width: 3;
-            stroke-linecap: round;
-            transition: 0.3s;
+            width: 20px; height: 20px; stroke: #9aa0a6; stroke-width: 3;
+            fill: none; margin-right: 15px; transition: 0.3s;
         }
-
+        .search-wrapper:focus-within .search-icon { stroke: var(--g-blue); }
+        
         .search-bar {
-            width: 100%; 
-            padding: 22px 30px 22px 60px; /* Extra left padding for the icon */
-            border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.1); 
-            background: var(--glass);
-            color: var(--text); 
-            font-size: 1.25rem; 
-            outline: none;
-            backdrop-filter: blur(20px); 
-            transition: 0.3s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            flex: 1; border: none; background: transparent; padding: 22px 0;
+            color: var(--text); font-size: 1.25rem; outline: none;
         }
 
-        /* Icon glows when you focus the bar */
-        .search-bar:focus + .search-icon {
-            stroke: var(--g-blue);
-            filter: drop-shadow(0 0 5px var(--g-blue));
-        }
-
-        @keyframes textBlink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
+        /* --- TYPING BLINK --- */
+        @keyframes textBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         .blink-mode { animation: textBlink 0.4s ease-in-out 2; }
 
         /* --- PREMIUM LAMP --- */
@@ -93,34 +97,44 @@
             position: absolute; top: 55px; left: 50%; transform: translateX(-50%);
             width: 400px; height: 0; opacity: 0;
             background: radial-gradient(ellipse at top, rgba(255, 230, 150, 0.4), transparent 70%);
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-            filter: blur(15px); transition: 0.5s; pointer-events: none;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: blur(15px); transition: 0.5s;
         }
         [data-theme="light"] .beam { height: 700px; opacity: 1; }
-        [data-theme="light"] .shade { background: var(--g-yellow); box-shadow: 0 0 40px var(--g-yellow); }
 
-        /* --- FLOATING NEWS FEED --- */
+        /* --- RESTING & FLOATING NEWS --- */
         .news-dock {
-            position: fixed; bottom: -80px;
+            position: fixed; bottom: -30px; /* Resting at bottom */
             width: 85%; max-width: 800px; height: 60px;
             background: var(--glass); backdrop-filter: blur(25px);
-            border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
-            display: flex; align-items: center; padding: 0 20px;
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            opacity: 0; pointer-events: none;
+            border-radius: 30px 30px 0 0; border: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; padding: 0 30px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0.6;
         }
-        .news-dock.visible { transform: translateY(-110px); opacity: 1; pointer-events: auto; }
+        /* Float State */
+        .news-dock.visible {
+            bottom: 40px; border-radius: 30px; opacity: 1;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
         .news-label { color: var(--g-red); font-weight: 900; font-size: 0.75rem; margin-right: 20px; white-space: nowrap; }
-        .ticker-wrap { overflow: hidden; flex: 1; position: relative; }
+        .ticker-wrap { overflow: hidden; flex: 1; }
         .ticker-move { display: inline-block; white-space: nowrap; animation: ticker 45s linear infinite; }
         .news-item { padding: 0 30px; color: var(--text); text-decoration: none; font-size: 0.9rem; opacity: 0.8; }
-        .news-item:hover { color: var(--g-blue); opacity: 1; }
 
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     </style>
 </head>
 <body data-theme="dark">
+
+    <div class="menu-toggle" onclick="toggleSidebar()">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="nav-link" onclick="search('site:reddit.com')">Reddit Only</div>
+        <div class="nav-link" onclick="search('scientific research -ai')">Science</div>
+        <div class="nav-link" onclick="search('world news -ai')">Clean News</div>
+    </div>
 
     <div class="lamp-box" onclick="toggleTheme()">
         <div class="cord"></div>
@@ -132,78 +146,60 @@
     </div>
 
     <div class="search-container">
-        <form onsubmit="doSearch(event)" style="width: 100%;">
-            <input type="text" id="q" class="search-bar" spellcheck="false" autocomplete="off">
-            <svg class="search-icon" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-        </form>
+        <div class="search-wrapper">
+            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <form onsubmit="doSearch(event)" style="flex: 1;">
+                <input type="text" id="q" class="search-bar" spellcheck="false" autocomplete="off">
+            </form>
+        </div>
     </div>
 
     <div class="news-dock" id="dock">
         <div class="news-label">HUMAN FEED 🔴</div>
-        <div class="ticker-wrap">
-            <div class="ticker-move" id="ticker">Filtering out AI slop...</div>
-        </div>
+        <div class="ticker-wrap"><div class="ticker-move" id="ticker">Fetching reality...</div></div>
     </div>
 
     <script>
         const input = document.getElementById('q');
         const dock = document.getElementById('dock');
         
-        // --- TYPING ANIMATION WITH BLINK ---
-        const hints = ["Search the pure web", "No AI slop allowed", "Anubis is guarding", "Pure human content"];
+        // Typing + Blink
+        const hints = ["Search the pure web", "No AI slop allowed", "Anubis Protected"];
         let hIdx = 0, charIdx = 0, isDeleting = false;
-
-        function typeEffect() {
-            const currentHint = hints[hIdx];
-            if (!isDeleting && charIdx <= currentHint.length) {
-                input.placeholder = currentHint.substring(0, charIdx) + "|";
-                charIdx++;
-                setTimeout(typeEffect, 100);
-            } else if (!isDeleting && charIdx > currentHint.length) {
-                input.classList.add('blink-mode');
-                input.placeholder = currentHint;
-                setTimeout(() => {
-                    input.classList.remove('blink-mode');
-                    isDeleting = true;
-                    typeEffect();
-                }, 1200);
+        function type() {
+            const h = hints[hIdx];
+            if (!isDeleting && charIdx <= h.length) {
+                input.placeholder = h.substring(0, charIdx) + "|"; charIdx++; setTimeout(type, 100);
+            } else if (!isDeleting && charIdx > h.length) {
+                input.classList.add('blink-mode'); input.placeholder = h;
+                setTimeout(() => { input.classList.remove('blink-mode'); isDeleting = true; type(); }, 1200);
             } else if (isDeleting && charIdx >= 0) {
-                input.placeholder = currentHint.substring(0, charIdx) + "|";
-                charIdx--;
-                setTimeout(typeEffect, 50);
+                input.placeholder = h.substring(0, charIdx) + "|"; charIdx--; setTimeout(type, 50);
             } else {
-                isDeleting = false;
-                hIdx = (hIdx + 1) % hints.length;
-                charIdx = 0;
-                setTimeout(typeEffect, 500);
+                isDeleting = false; hIdx = (hIdx + 1) % hints.length; charIdx = 0; setTimeout(type, 500);
             }
         }
-        typeEffect();
+        type();
 
+        // Mouse Reveal Logic
         document.addEventListener('mousemove', (e) => {
-            if (window.innerHeight - e.clientY < 150) dock.classList.add('visible');
+            if (window.innerHeight - e.clientY < 120) dock.classList.add('visible');
             else dock.classList.remove('visible');
         });
 
-        function toggleTheme() {
-            document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-        }
-        function doSearch(e) {
-            e.preventDefault();
-            if(input.value) window.location.href = `https://www.google.com/search?q=${encodeURIComponent(input.value)}&udm=14`;
-        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+        function doSearch(e) { e.preventDefault(); search(input.value); }
+        function search(v) { if(v) window.location.href=`https://www.google.com/search?q=${encodeURIComponent(v)}&udm=14`; }
 
         async function fetchNews() {
             try {
                 const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml");
                 const data = await res.json();
-                const forbidden = ['ai', 'gpt', 'bot', 'gemini', 'intelligence'];
+                const forbidden = ['ai', 'gpt', 'bot', 'gemini'];
                 const clean = data.items.filter(i => !forbidden.some(word => (i.title + i.description).toLowerCase().includes(word)));
                 document.getElementById('ticker').innerHTML = clean.map(i => `<a href="${i.link}" target="_blank" class="news-item">${i.title}</a>`).join('');
-            } catch(e) { document.getElementById('ticker').innerText = "Real-time feed temporarily shielded."; }
+            } catch(e) { document.getElementById('ticker').innerText = "Feed encrypted."; }
         }
         fetchNews();
     </script>
