@@ -3,158 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Woogle - Pure Internet</title>
+    <title>Woogle - Premium</title>
     <style>
         :root {
-            --bg: #111;
-            --glass: rgba(255, 255, 255, 0.05);
-            --text: #fff;
+            --bg: #121212;
+            --text: #e0e0e0;
             --accent: #4285f4;
+            --glass: rgba(255, 255, 255, 0.05);
+            --lamp-off: #444;
+            --lamp-on: #fbbc05;
             --shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
         [data-theme="light"] {
-            --bg: #f0f2f5;
-            --glass: rgba(255, 255, 255, 0.6);
+            --bg: #e8eaed;
             --text: #202124;
+            --glass: rgba(255, 255, 255, 0.8);
             --shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
         body {
-            font-family: 'Google Sans', 'Roboto', sans-serif;
+            font-family: 'Google Sans', 'Segoe UI', sans-serif;
             background: var(--bg);
             color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            margin: 0; height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+            transition: background 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
             overflow: hidden;
-            transition: background 0.5s ease;
         }
 
-        /* --- 1. REALISTIC LAMP LIGHT --- */
-        .lamp-container { position: fixed; top: 0; right: 100px; z-index: 10; }
+        /* --- 1. THE PREMIUM BED LAMP --- */
+        .lamp-wrapper {
+            position: fixed; top: -20px; right: 10%; z-index: 10;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        /* The Cord holding the lamp */
+        .cord { width: 4px; height: 100px; background: #333; }
+
+        /* The Lampshade */
+        .shade {
+            width: 120px; height: 90px;
+            background: linear-gradient(135deg, #444, #222);
+            border-radius: 60px 60px 10px 10px;
+            position: relative; cursor: pointer;
+            box-shadow: inset 0 -5px 10px rgba(0,0,0,0.5);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 5;
+        }
+        .shade:active { transform: translateY(10px) scale(0.98); } /* Click recoil */
         
-        /* The Bulb */
+        /* The Bulb (Hidden inside) */
         .bulb {
-            width: 60px; height: 60px; background: #444; border-radius: 0 0 20px 20px;
-            position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
-            z-index: 2; cursor: pointer; transition: 0.3s;
+            width: 40px; height: 40px; background: #555; border-radius: 50%;
+            position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%);
+            transition: 0.3s; z-index: 4;
         }
 
-        /* The Light Beam (Cone) */
-        .light-beam {
-            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-            width: 400px; height: 0; opacity: 0;
-            background: radial-gradient(ellipse at top, rgba(255, 220, 100, 0.6), transparent 70%);
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%); /* Triangle Shape */
-            transition: height 0.3s ease-out, opacity 0.3s ease;
-            pointer-events: none; z-index: 1;
-            filter: blur(10px);
+        /* The Light Cone (Volumetric Fog) */
+        .light-cone {
+            position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 0;
+            background: radial-gradient(ellipse at top, rgba(255, 220, 150, 0.4), transparent 70%);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            opacity: 0; pointer-events: none;
+            transition: height 0.5s ease-out, opacity 0.4s ease;
+            mix-blend-mode: screen; z-index: 1;
         }
 
-        /* Light On State */
-        [data-theme="light"] .light-beam { height: 600px; opacity: 1; }
-        [data-theme="light"] .bulb { background: #fbbc05; box-shadow: 0 0 40px #fbbc05; }
+        /* -- LIGHT ON STATE -- */
+        [data-theme="light"] .shade { background: linear-gradient(135deg, #d4a017, #fbbc05); }
+        [data-theme="light"] .bulb { background: #fff; box-shadow: 0 0 50px #fff; }
+        [data-theme="light"] .light-cone { height: 900px; opacity: 1; }
 
-
-        /* --- 2. MENU (Hamburger) --- */
-        .menu-btn {
-            position: fixed; top: 30px; left: 30px; cursor: pointer; z-index: 20;
-            display: flex; flex-direction: column; gap: 6px;
-        }
-        .bar { width: 30px; height: 3px; background: var(--text); border-radius: 2px; transition: 0.3s; }
+        /* --- 2. FUNCTIONAL SIDEBAR --- */
+        .menu-btn { position: fixed; top: 30px; left: 30px; cursor: pointer; z-index: 20; }
+        .bar { width: 30px; height: 3px; background: var(--text); margin: 6px 0; transition: 0.3s; }
         
         .sidebar {
-            position: fixed; top: 0; left: -250px; width: 250px; height: 100%;
-            background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(20px);
-            transition: 0.4s; z-index: 19; padding-top: 80px;
+            position: fixed; top: 0; left: -300px; width: 300px; height: 100%;
+            background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(20px);
             border-right: 1px solid rgba(255,255,255,0.1);
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 19;
+            padding-top: 100px; box-shadow: 10px 0 30px rgba(0,0,0,0.5);
         }
         .sidebar.active { left: 0; }
+        
         .menu-item {
-            padding: 15px 30px; color: #fff; text-decoration: none; display: block;
-            font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s;
+            padding: 20px 40px; color: #ccc; font-size: 1.1rem; cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s;
+            display: flex; align-items: center; gap: 15px;
         }
-        .menu-item:hover { background: var(--accent); padding-left: 40px; }
+        .menu-item:hover { background: var(--accent); color: #fff; padding-left: 50px; }
+        .menu-icon { font-size: 1.3rem; }
 
-
-        /* --- 3. RTX LOGO & SEARCH --- */
-        .center-content { margin-top: 15vh; text-align: center; z-index: 5; }
+        /* --- 3. RTX CENTER STAGE --- */
+        .center-stage { margin-top: 20vh; text-align: center; z-index: 5; width: 100%; }
         
         h1 {
-            font-size: 6rem; font-weight: 900; letter-spacing: -4px; margin: 0 0 40px 0;
-            user-select: none;
+            font-size: 7rem; font-weight: 800; letter-spacing: -5px; margin-bottom: 30px;
+            background: linear-gradient(to right, #4285f4, #ea4335, #fbbc05, #34a853);
+            -webkit-background-clip: text; color: transparent; /* Gradient Text */
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.1));
         }
-        .g-blue { color: #4285f4; text-shadow: 0 0 30px rgba(66, 133, 244, 0.5); }
-        .g-red { color: #ea4335; text-shadow: 0 0 30px rgba(234, 67, 53, 0.5); }
-        .g-yellow { color: #fbbc05; text-shadow: 0 0 30px rgba(251, 188, 5, 0.5); }
-        .g-green { color: #34a853; text-shadow: 0 0 30px rgba(52, 168, 83, 0.5); }
 
-        .search-container {
-            position: relative; width: 600px;
-        }
+        .search-container { position: relative; width: 600px; margin: 0 auto; }
         .search-box {
-            width: 100%; padding: 20px 25px; font-size: 1.2rem;
-            border-radius: 50px; border: 1px solid rgba(255,255,255,0.2);
-            background: var(--glass); backdrop-filter: blur(15px);
-            color: var(--text); outline: none; transition: 0.3s;
-            box-shadow: var(--shadow);
+            width: 100%; padding: 22px 30px; font-size: 1.3rem; border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1); background: var(--glass);
+            backdrop-filter: blur(20px); color: var(--text); outline: none;
+            transition: all 0.3s ease; box-shadow: var(--shadow);
         }
         .search-box:focus {
             transform: scale(1.02); border-color: var(--accent);
-            box-shadow: 0 0 25px rgba(66, 133, 244, 0.4);
+            box-shadow: 0 0 30px rgba(66, 133, 244, 0.3);
         }
 
+        /* --- 4. NEWS TICKER (Bottom) --- */
+        .news-dock {
+            position: fixed; bottom: 30px; width: 90%; max-width: 1000px;
+            background: var(--glass); backdrop-filter: blur(15px);
+            border-radius: 20px; padding: 15px 25px; border: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; gap: 20px;
+        }
+        .news-label { font-weight: bold; color: var(--accent); white-space: nowrap; }
+        .news-ticker { overflow: hidden; white-space: nowrap; width: 100%; }
+        .ticker-content { display: inline-block; animation: scroll 30s linear infinite; }
+        .ticker-item { margin-right: 50px; cursor: pointer; color: var(--text); text-decoration: none; opacity: 0.8; }
+        .ticker-item:hover { opacity: 1; text-decoration: underline; color: var(--accent); }
 
-        /* --- 4. REAL NEWS (Bottom) --- */
-        .news-section {
-            position: fixed; bottom: 30px; width: 80%; max-width: 900px;
-            background: var(--glass); backdrop-filter: blur(10px);
-            border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.1);
-            animation: slideUp 0.8s ease-out;
-        }
-        .news-header { font-size: 0.9rem; font-weight: bold; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .news-grid { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 10px; }
-        .news-card {
-            min-width: 200px; padding: 10px; background: rgba(255,255,255,0.03);
-            border-radius: 10px; cursor: pointer; transition: 0.3s;
-            text-decoration: none; color: var(--text);
-        }
-        .news-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-5px); }
-        .news-title { font-size: 0.9rem; line-height: 1.4; }
-        
-        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
     </style>
 </head>
 <body data-theme="dark">
 
     <div class="menu-btn" onclick="toggleMenu()">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
     </div>
-
     <div class="sidebar" id="sidebar">
-        <a href="#" class="menu-item">📰 World News</a>
-        <a href="#" class="menu-item">🔬 Science (No AI)</a>
-        <a href="#" class="menu-item">💻 Coding Articles</a>
-        <a href="#" class="menu-item">🛡️ About Anubis</a>
+        <div class="menu-item" onclick="quickSearch('site:reddit.com science')">
+            <span class="menu-icon">🧪</span> Science (Reddit Only)
+        </div>
+        <div class="menu-item" onclick="quickSearch('programming -ai -gpt -medium')">
+            <span class="menu-icon">💻</span> Coding (No AI Spam)
+        </div>
+        <div class="menu-item" onclick="quickSearch('world news -ai')">
+            <span class="menu-icon">📰</span> World News (Clean)
+        </div>
+        <div class="menu-item" onclick="alert('Anubis Difficulty: 4\nStatus: Online\nProtection: Active')">
+            <span class="menu-icon">🛡️</span> Anubis Status
+        </div>
     </div>
 
-    <div class="lamp-container">
-        <div class="bulb" onclick="toggleTheme()"></div>
-        <div class="light-beam"></div>
+    <div class="lamp-wrapper">
+        <div class="cord"></div>
+        <div class="shade" onclick="toggleTheme()" title="Click to Switch Lights">
+            <div class="bulb"></div>
+        </div>
+        <div class="light-cone"></div>
     </div>
 
-    <div class="center-content">
-        <h1>
-            <span class="g-blue">W</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
-        </h1>
-
+    <div class="center-stage">
+        <h1>Woogle</h1>
         <div class="search-container">
             <form onsubmit="handleSearch(event)">
                 <input type="text" id="query" class="search-box" autocomplete="off">
@@ -162,82 +173,77 @@
         </div>
     </div>
 
-    <div class="news-section">
-        <div class="news-header">🔴 Real Human News (Filtered)</div>
-        <div class="news-grid" id="news-container">
-            <div style="padding:10px; color:#888;">Fetching pure information...</div>
+    <div class="news-dock">
+        <div class="news-label">HUMAN NEWS 🔴</div>
+        <div class="news-ticker" id="ticker-box">
+            <div class="ticker-content" id="news-content">Loading reliable sources...</div>
         </div>
     </div>
 
     <script>
-        // --- 1. TYPING ANIMATION ---
-        const phrases = ["Search pure web...", "No AI hallucinations...", "Verified by humans...", "Anubis Protected."];
-        let pIdx = 0, cIdx = 0, isDel = false;
-        
-        function type() {
-            const current = phrases[pIdx];
-            const txt = current.substring(0, cIdx);
-            document.getElementById('query').placeholder = txt + "|";
-
-            if(!isDel && cIdx < current.length) { cIdx++; setTimeout(type, 100); }
-            else if(isDel && cIdx > 0) { cIdx--; setTimeout(type, 50); }
-            else { isDel = !isDel; if(!isDel) pIdx = (pIdx+1)%phrases.length; setTimeout(type, 1000); }
-        }
-        type();
-
-        // --- 2. SEARCH ---
+        // --- 1. SEARCH LOGIC ---
         function handleSearch(e) {
             e.preventDefault();
-            const q = document.getElementById('query').value;
-            if(q) window.location.href = `https://www.google.com/search?q=${encodeURIComponent(q)}&udm=14`;
+            performSearch(document.getElementById('query').value);
         }
 
-        // --- 3. THEME & MENU ---
-        function toggleTheme() {
-            const b = document.body;
-            b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        function quickSearch(query) {
+            performSearch(query);
         }
+
+        function performSearch(query) {
+            if(!query) return;
+            // udm=14 forces "Web" mode (No AI Overviews)
+            window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}&udm=14`;
+        }
+
+        // --- 2. THEME TOGGLE ---
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        }
+
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('active');
         }
 
-        // --- 4. REAL NEWS FETCHER (AI FILTER) ---
-        async function fetchNews() {
-            const container = document.getElementById('news-container');
-            // Using a public RSS-to-JSON bridge (RSS2JSON) to bypass CORS
-            // Feed: The Verge (Tech)
-            const RSS_URL = "https://api.rss2json.com/v1/api.json?rss_url=https://www.theverge.com/rss/index.xml";
+        // --- 3. TYPING PLACEHOLDER ---
+        const phrases = ["Search pure web...", "Bypassing AI content...", "Anubis Secured.", "No Bots Allowed."];
+        let pIdx = 0, cIdx = 0, isDel = false;
+        function type() {
+            const current = phrases[pIdx];
+            const txt = current.substring(0, cIdx);
+            document.getElementById('query').placeholder = txt + "|";
+            
+            if(!isDel && cIdx < current.length) { cIdx++; setTimeout(type, 100); }
+            else if(isDel && cIdx > 0) { cIdx--; setTimeout(type, 50); }
+            else { isDel = !isDel; if(!isDel) pIdx = (pIdx+1)%phrases.length; setTimeout(type, 2000); }
+        }
+        type();
 
+        // --- 4. NEWS TICKER (RSS) ---
+        async function loadNews() {
+            const url = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/technology/rss.xml";
             try {
-                const res = await fetch(RSS_URL);
+                const res = await fetch(url);
                 const data = await res.json();
+                const forbidden = ['ai', 'gpt', 'gemini', 'artificial intelligence'];
                 
-                // --- THE AI FILTER ---
-                const forbidden = ['ai', 'gpt', 'llm', 'gemini', 'chatgpt', 'artificial intelligence', 'machine learning'];
-                
-                const cleanNews = data.items.filter(item => {
-                    const txt = (item.title + item.description).toLowerCase();
-                    return !forbidden.some(badWord => txt.includes(badWord));
-                }).slice(0, 5); // Take top 5 clean stories
+                const clean = data.items.filter(item => 
+                    !forbidden.some(bad => (item.title + item.description).toLowerCase().includes(bad))
+                );
 
-                if(cleanNews.length === 0) {
-                    container.innerHTML = '<div style="padding:10px;">All current news contains AI. The internet is dead.</div>';
-                    return;
-                }
+                const html = clean.map(item => 
+                    `<a href="${item.link}" target="_blank" class="ticker-item">${item.title}</a>`
+                ).join(' • ');
 
-                container.innerHTML = cleanNews.map(item => `
-                    <a href="${item.link}" target="_blank" class="news-card">
-                        <div class="news-title">${item.title}</div>
-                        <div style="font-size:0.7rem; margin-top:5px; opacity:0.6;">${new Date(item.pubDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                    </a>
-                `).join('');
-
-            } catch (e) {
-                container.innerHTML = '<div style="padding:10px; color:#f55;">News System Offline (RSS Error)</div>';
+                document.getElementById('news-content').innerHTML = html || "No non-AI news found today.";
+            } catch(e) {
+                document.getElementById('news-content').innerHTML = "News feed unavailable.";
             }
         }
-        
-        fetchNews();
+        loadNews();
     </script>
 </body>
 </html>
