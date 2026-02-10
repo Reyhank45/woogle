@@ -45,7 +45,8 @@
         .sidebar.open { left: 0; }
         .nav-link {
             padding: 20px 40px; color: #aaa; font-size: 1.1rem; cursor: pointer;
-            display: block; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex; align-items: center; gap: 12px;
+            text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         .nav-link:hover { color: #fff; background: var(--glass); }
 
@@ -75,7 +76,6 @@
         .search-icon { width: 20px; height: 20px; stroke: #9aa0a6; stroke-width: 3; fill: none; margin-right: 15px; }
         .search-bar { flex: 1; border: none; background: transparent; padding: 22px 0; color: var(--text); font-size: 1.25rem; outline: none; }
 
-        /* --- TYPING BLINK --- */
         @keyframes textBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         .blink-mode { animation: textBlink 0.4s ease-in-out 2; }
 
@@ -94,27 +94,40 @@
         /* --- DOCKED & FLOATING NEWS --- */
         .news-dock {
             position: fixed; 
-            bottom: 0; /* Docked to the bottom edge */
-            width: 100%; /* Spans full width when docked */
+            bottom: 0; 
+            width: 100%; 
             height: 50px;
             background: var(--glass); 
             backdrop-filter: blur(25px);
             border-top: 1px solid rgba(255,255,255,0.1);
             display: flex; 
             align-items: center; 
-            padding: 0 30px;
+            padding: 0; /* Padding moved to inner for alignment */
             transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
             z-index: 1000;
+            justify-content: center;
         }
 
-        /* Float State: triggered when cursor is near */
+        .news-inner {
+            width: 100%;
+            max-width: 95%; /* Docked max width */
+            display: flex;
+            align-items: center;
+            padding: 0 40px; /* Aligns text away from far left */
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
         .news-dock.visible {
             bottom: 30px; 
             width: 85%; 
-            max-width: 800px; 
             border-radius: 30px; 
             border: 1px solid rgba(255,255,255,0.2);
             box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+
+        .news-dock.visible .news-inner {
+            max-width: 100%;
+            padding: 0 30px;
         }
 
         .news-label { color: var(--g-red); font-weight: 900; font-size: 0.75rem; margin-right: 20px; white-space: nowrap; }
@@ -133,9 +146,10 @@
     </div>
 
     <div class="sidebar" id="sidebar">
-        <div class="nav-link" onclick="search('site:reddit.com')">Reddit Only</div>
-        <div class="nav-link" onclick="search('scientific research -ai')">Science</div>
-        <div class="nav-link" onclick="search('world news -ai')">Clean News</div>
+        <div class="nav-link" onclick="search('site:reddit.com')"><span>💬</span> Reddit Only</div>
+        <div class="nav-link" onclick="search('scientific research -ai')"><span>🧬</span> Science</div>
+        <div class="nav-link" onclick="search('world news -ai')"><span>🌍</span> Clean News</div>
+        <div class="nav-link" onclick="search('github.com -ai')"><span>💻</span> Human Code</div>
     </div>
 
     <div class="lamp-box" onclick="toggleTheme()">
@@ -157,9 +171,11 @@
     </div>
 
     <div class="news-dock" id="dock">
-        <div class="news-label">HUMAN FEED 🔴</div>
-        <div class="ticker-wrap">
-            <div class="ticker-move" id="ticker">Curating the AI-free web...</div>
+        <div class="news-inner">
+            <div class="news-label">HUMAN FEED 🔴</div>
+            <div class="ticker-wrap">
+                <div class="ticker-move" id="ticker">Securing reality...</div>
+            </div>
         </div>
     </div>
 
@@ -185,14 +201,9 @@
         }
         type();
 
-        // Cursor Transition Logic
         document.addEventListener('mousemove', (e) => {
-            // If mouse is within 150px of the bottom, float the bar
-            if (window.innerHeight - e.clientY < 150) {
-                dock.classList.add('visible');
-            } else {
-                dock.classList.remove('visible');
-            }
+            if (window.innerHeight - e.clientY < 120) dock.classList.add('visible');
+            else dock.classList.remove('visible');
         });
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
@@ -207,7 +218,7 @@
                 const forbidden = ['ai', 'gpt', 'bot', 'gemini'];
                 const clean = data.items.filter(i => !forbidden.some(word => (i.title + i.description).toLowerCase().includes(word)));
                 document.getElementById('ticker').innerHTML = clean.map(i => `<a href="${i.link}" target="_blank" class="news-item">${i.title}</a>`).join('');
-            } catch(e) { document.getElementById('ticker').innerText = "Feed secured by Anubis."; }
+            } catch(e) { document.getElementById('ticker').innerText = "Feed encrypted."; }
         }
         fetchNews();
     </script>
