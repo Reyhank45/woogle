@@ -60,10 +60,8 @@
         .w-y { color: var(--g-yellow); text-shadow: 0 0 30px rgba(251,188,5,0.4); }
         .w-g { color: var(--g-green); text-shadow: 0 0 30px rgba(52,168,83,0.4); }
 
-        /* --- SEARCH BAR FIXED --- */
-        .search-container { 
-            width: 90%; max-width: 620px; position: relative;
-        }
+        /* --- SEARCH BAR --- */
+        .search-container { width: 90%; max-width: 620px; position: relative; }
         .search-wrapper {
             display: flex; align-items: center; background: var(--glass);
             border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);
@@ -74,16 +72,8 @@
             border-color: var(--g-blue); box-shadow: 0 0 30px rgba(66, 133, 244, 0.2);
             transform: scale(1.02);
         }
-        .search-icon {
-            width: 20px; height: 20px; stroke: #9aa0a6; stroke-width: 3;
-            fill: none; margin-right: 15px; transition: 0.3s;
-        }
-        .search-wrapper:focus-within .search-icon { stroke: var(--g-blue); }
-        
-        .search-bar {
-            flex: 1; border: none; background: transparent; padding: 22px 0;
-            color: var(--text); font-size: 1.25rem; outline: none;
-        }
+        .search-icon { width: 20px; height: 20px; stroke: #9aa0a6; stroke-width: 3; fill: none; margin-right: 15px; }
+        .search-bar { flex: 1; border: none; background: transparent; padding: 22px 0; color: var(--text); font-size: 1.25rem; outline: none; }
 
         /* --- TYPING BLINK --- */
         @keyframes textBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
@@ -101,25 +91,37 @@
         }
         [data-theme="light"] .beam { height: 700px; opacity: 1; }
 
-        /* --- RESTING & FLOATING NEWS --- */
+        /* --- DOCKED & FLOATING NEWS --- */
         .news-dock {
-            position: fixed; bottom: -30px; /* Resting at bottom */
-            width: 85%; max-width: 800px; height: 60px;
-            background: var(--glass); backdrop-filter: blur(25px);
-            border-radius: 30px 30px 0 0; border: 1px solid rgba(255,255,255,0.1);
-            display: flex; align-items: center; padding: 0 30px;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            opacity: 0.6;
+            position: fixed; 
+            bottom: 0; /* Docked to the bottom edge */
+            width: 100%; /* Spans full width when docked */
+            height: 50px;
+            background: var(--glass); 
+            backdrop-filter: blur(25px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex; 
+            align-items: center; 
+            padding: 0 30px;
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: 1000;
         }
-        /* Float State */
+
+        /* Float State: triggered when cursor is near */
         .news-dock.visible {
-            bottom: 40px; border-radius: 30px; opacity: 1;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            bottom: 30px; 
+            width: 85%; 
+            max-width: 800px; 
+            border-radius: 30px; 
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
         }
+
         .news-label { color: var(--g-red); font-weight: 900; font-size: 0.75rem; margin-right: 20px; white-space: nowrap; }
         .ticker-wrap { overflow: hidden; flex: 1; }
         .ticker-move { display: inline-block; white-space: nowrap; animation: ticker 45s linear infinite; }
         .news-item { padding: 0 30px; color: var(--text); text-decoration: none; font-size: 0.9rem; opacity: 0.8; }
+        .news-item:hover { color: var(--g-blue); opacity: 1; }
 
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     </style>
@@ -156,7 +158,9 @@
 
     <div class="news-dock" id="dock">
         <div class="news-label">HUMAN FEED 🔴</div>
-        <div class="ticker-wrap"><div class="ticker-move" id="ticker">Fetching reality...</div></div>
+        <div class="ticker-wrap">
+            <div class="ticker-move" id="ticker">Curating the AI-free web...</div>
+        </div>
     </div>
 
     <script>
@@ -181,10 +185,14 @@
         }
         type();
 
-        // Mouse Reveal Logic
+        // Cursor Transition Logic
         document.addEventListener('mousemove', (e) => {
-            if (window.innerHeight - e.clientY < 120) dock.classList.add('visible');
-            else dock.classList.remove('visible');
+            // If mouse is within 150px of the bottom, float the bar
+            if (window.innerHeight - e.clientY < 150) {
+                dock.classList.add('visible');
+            } else {
+                dock.classList.remove('visible');
+            }
         });
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
@@ -199,7 +207,7 @@
                 const forbidden = ['ai', 'gpt', 'bot', 'gemini'];
                 const clean = data.items.filter(i => !forbidden.some(word => (i.title + i.description).toLowerCase().includes(word)));
                 document.getElementById('ticker').innerHTML = clean.map(i => `<a href="${i.link}" target="_blank" class="news-item">${i.title}</a>`).join('');
-            } catch(e) { document.getElementById('ticker').innerText = "Feed encrypted."; }
+            } catch(e) { document.getElementById('ticker').innerText = "Feed secured by Anubis."; }
         }
         fetchNews();
     </script>
